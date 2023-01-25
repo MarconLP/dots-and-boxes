@@ -1,31 +1,93 @@
 import { type NextPage } from "next";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 const Game: NextPage = () => {
-  const [clicked, setClicked] = useState<number[]>([]);
+  const [turn, setTurn] = useState("TeamA");
+  const [teamALines, setTeamALines] = useState<number[]>([]);
+  const [teamABoxes, setTeamABoxes] = useState<number[]>([]);
+  const [teamBLines, setTeamBLines] = useState<number[]>([]);
+  const [teamBBoxes, setTeamBBoxes] = useState<number[]>([]);
 
-  const handleClick = (id: number) => {
-    setClicked((x) => [...x, id]);
+  const toggleTurn = () => {
+    if (turn === "TeamA") setTurn("TeamB");
+    else if (turn === "TeamB") setTurn("TeamA");
   };
 
-  const isOwned = (row: number, col: number) => {
-    const id = parseInt(`${row}${col}`);
+  const handleClick = (id: number) => {
+    if (turn === "TeamA") {
+      setTeamALines((x) => [...x, id]);
+    } else if (turn === "TeamB") {
+      setTeamBLines((x) => [...x, id]);
+    }
+    toggleTurn();
+  };
 
-    const neededIds = [
-      id,
-      id + 1,
-      parseInt(`${row - 1}${col}`),
-      parseInt(`${row + 1}${col}`),
-    ];
+  useEffect(() => {
+    checkBoxClaim();
+  }, [teamALines, teamBLines]);
 
-    return neededIds.every((elem) => clicked.includes(elem));
+  const checkBoxClaim = () => {
+    const boxes: number[] = [];
+
+    [2, 4, 6, 8].map((row) =>
+      [1, 2, 3, 4, 5].map((col) =>
+        boxes.push(parseInt(row.toString() + col.toString()))
+      )
+    );
+
+    boxes
+      .filter((id) => ![...teamABoxes, ...teamBBoxes].includes(id))
+      .map((id) => {
+        const neededIds = [
+          id,
+          id + 1,
+          parseInt(
+            `${parseInt(id.toString().charAt(0)) - 1}${parseInt(
+              id.toString().charAt(1)
+            )}`
+          ),
+          parseInt(
+            `${parseInt(id.toString().charAt(0)) + 1}${parseInt(
+              id.toString().charAt(1)
+            )}`
+          ),
+        ];
+
+        const fullBox = neededIds.every((elem) =>
+          [...teamALines, ...teamBLines].includes(elem)
+        );
+
+        if (fullBox && turn === "TeamB") {
+          setTeamABoxes((x) => [...x, id]);
+        } else if (fullBox && turn === "TeamA") {
+          setTeamBBoxes((x) => [...x, id]);
+        }
+      });
+  };
+
+  const getBoxOwnerColor = (id: number) => {
+    const teamA = teamABoxes.includes(id);
+    const teamB = teamBBoxes.includes(id);
+
+    if (teamA) return "#44be2acc";
+    else if (teamB) return "#c64136cc";
+    else return "#ffffff";
+  };
+
+  const getLineOwnerColor = (id: number) => {
+    const teamA = teamALines.includes(id);
+    const teamB = teamBLines.includes(id);
+
+    if (teamA) return "#44be2acc";
+    else if (teamB) return "#c64136cc";
+    else return "#111827";
   };
 
   return (
     <main className="flex h-[100vh] flex-col items-center justify-center gap-4">
       <div>
         <p className="mb-6 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
-          Your Turn
+          {turn === "TeamA" ? "Your Turn" : "Opponents Turn"}
         </p>
       </div>
       <div className="flex flex-col items-center justify-center">
@@ -43,19 +105,27 @@ const Game: NextPage = () => {
                   return (
                     <Fragment key={id}>
                       <div
+                        style={{
+                          backgroundColor: getLineOwnerColor(id),
+                        }}
                         onClick={() => handleClick(id)}
                         data-id={id}
-                        className={`cursor-pointer rounded bg-gray-900 ${
+                        className={`cursor-pointer rounded ${
                           isBigRow ? "h-[100px] w-6" : "h-6 w-[100px]"
                         }`}
                       ></div>
                       {isBigRow && col !== 6 && (
                         <div
                           data-id={id}
-                          className={`w-[100px] ${
-                            isOwned(row, col) ? "bg-blue-500" : ""
-                          }`}
-                        ></div>
+                          className="flex w-[100px] items-center justify-center"
+                        >
+                          <div
+                            className="h-[75px] w-[75px] rounded opacity-80"
+                            style={{
+                              backgroundColor: getBoxOwnerColor(id),
+                            }}
+                          ></div>
+                        </div>
                       )}
                     </Fragment>
                   );
