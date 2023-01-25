@@ -1,6 +1,10 @@
 import { type NextPage } from "next";
 
-const LandingScreen: NextPage = () => {
+interface Props {
+    setPage: (page: string) => void
+}
+
+const LandingScreen: NextPage<Props> = ({ setPage }) => {
     return (
         <main className="flex justify-center items-center h-[100vh] flex-col">
             <div><p className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">Dots & Boxes</p></div>
@@ -12,8 +16,8 @@ const LandingScreen: NextPage = () => {
                     </div>
                 </div>
                 <div>
-                    <button className="mr-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Find a Game</button>
-                    <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create a Room</button>
+                    <button onClick={() => setPage('room-list')} className="mr-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Find a Game</button>
+                    <button onClick={() => setPage('room')}  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create a Room</button>
                 </div>
             </div>
         </main>
