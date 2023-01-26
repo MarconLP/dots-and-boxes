@@ -8,9 +8,9 @@ import { useState } from "react";
 import Room from "@components/Room";
 import Game from "@components/Game";
 import EndScreen from "@components/EndScreen";
+import { PusherProvider, useSubscribeToEvent } from "../utils/pusher";
 
 const Home: NextPage = () => {
-  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const [page, setPage] = useState("");
 
   return (
@@ -23,11 +23,14 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {page === "" && <LandingScreen setPage={setPage} />}
-      {page === "room-list" && <RoomList />}
-      {page === "room" && <Room setPage={setPage} />}
-      {page === "game" && <Game setPage={setPage} />}
-      {page === "end" && <EndScreen setPage={setPage} />}
+
+      <PusherProvider slug={`my-channel`}>
+        {page === "" && <LandingScreen setPage={setPage} />}
+        {page === "room-list" && <RoomList />}
+        {page === "room" && <Room setPage={setPage} />}
+        {page === "game" && <Game setPage={setPage} />}
+        {page === "end" && <EndScreen setPage={setPage} />}
+      </PusherProvider>
     </>
   );
 };

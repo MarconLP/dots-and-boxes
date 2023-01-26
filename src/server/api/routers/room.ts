@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
+import { pusherServerClient } from "../..//pusher";
 
 export const roomRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -19,4 +20,12 @@ export const roomRouter = createTRPCRouter({
 
       return "OK";
     }),
+
+  triggerMessage: publicProcedure.query(async ({ input, ctx }) => {
+    await pusherServerClient.trigger("my-channel", "my-event", {
+      message: "hello world",
+    });
+
+    return "OK";
+  }),
 });

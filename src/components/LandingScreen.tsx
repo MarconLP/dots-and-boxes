@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import { api } from "../utils/api";
 import { ChangeEvent, useState } from "react";
 import { faker } from "@faker-js/faker";
+import { useSubscribeToEvent } from "../utils/pusher";
 
 interface Props {
   setPage: (page: string) => void;
@@ -10,6 +11,8 @@ interface Props {
 const LandingScreen: NextPage<Props> = ({ setPage }) => {
   const [username, setUsername] = useState("");
   const createRoom = api.room.createRoom.useMutation();
+
+  useSubscribeToEvent("new-question", (x) => console.log(x));
 
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
