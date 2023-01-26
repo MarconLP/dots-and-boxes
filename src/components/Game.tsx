@@ -1,7 +1,11 @@
 import { type NextPage } from "next";
 import { Fragment, useEffect, useState } from "react";
 
-const Game: NextPage = () => {
+interface Props {
+  setPage: (page: string) => void;
+}
+
+const Game: NextPage<Props> = ({ setPage }) => {
   const [turn, setTurn] = useState("TeamA");
   const [teamALines, setTeamALines] = useState<number[]>([]);
   const [teamABoxes, setTeamABoxes] = useState<number[]>([]);
@@ -19,12 +23,17 @@ const Game: NextPage = () => {
     } else if (turn === "TeamB") {
       setTeamBLines((x) => [...x, id]);
     }
-    toggleTurn();
   };
 
   useEffect(() => {
     checkBoxClaim();
   }, [teamALines, teamBLines]);
+
+  useEffect(() => {
+    if ([...teamABoxes, ...teamBBoxes].length >= 20) {
+      setPage("end");
+    }
+  }, [teamABoxes, teamBBoxes]);
 
   const checkBoxClaim = () => {
     const boxes: number[] = [];
@@ -35,7 +44,7 @@ const Game: NextPage = () => {
       )
     );
 
-    boxes
+    const boxesResult = boxes
       .filter((id) => ![...teamABoxes, ...teamBBoxes].includes(id))
       .map((id) => {
         const neededIds = [
@@ -57,12 +66,18 @@ const Game: NextPage = () => {
           [...teamALines, ...teamBLines].includes(elem)
         );
 
-        if (fullBox && turn === "TeamB") {
+        if (fullBox && turn === "TeamA") {
           setTeamABoxes((x) => [...x, id]);
-        } else if (fullBox && turn === "TeamA") {
+          return true;
+        } else if (fullBox && turn === "TeamB") {
           setTeamBBoxes((x) => [...x, id]);
+          return true;
         }
       });
+
+    if (!boxesResult.some((x) => x)) {
+      toggleTurn();
+    }
   };
 
   const getBoxOwnerColor = (id: number) => {

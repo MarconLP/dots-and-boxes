@@ -7,6 +7,7 @@ import RoomList from "@components/RoomList";
 import { useState } from "react";
 import Room from "@components/Room";
 import Game from "@components/Game";
+import EndScreen from "@components/EndScreen";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -25,7 +26,8 @@ const Home: NextPage = () => {
       {page === "" && <LandingScreen setPage={setPage} />}
       {page === "room-list" && <RoomList />}
       {page === "room" && <Room setPage={setPage} />}
-      {page === "game" && <Game />}
+      {page === "game" && <Game setPage={setPage} />}
+      {page === "end" && <EndScreen setPage={setPage} />}
     </>
   );
 };
