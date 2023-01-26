@@ -9,9 +9,8 @@ export const roomRouter = createTRPCRouter({
   }),
 
   createRoom: publicProcedure
-    .input(z.object({ username: z.string() }))
+    .input(z.object({ username: z.string().min(1).max(30).trim() }))
     .mutation(async ({ input, ctx }) => {
-      console.log(input.username);
       await ctx.prisma.room.create({
         data: {
           author: input.username,

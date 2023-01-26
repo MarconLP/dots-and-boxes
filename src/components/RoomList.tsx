@@ -16,7 +16,7 @@ const RoomList: NextPage = () => {
           Click to join a room
         </p>
       </div>
-      <div className="mt-4 w-[200px] border border-[#E2E8F0] p-2">
+      <div className="mt-4 max-h-[60vh] w-[200px] overflow-scroll border border-[#E2E8F0] p-2">
         {isLoading && (
           <p className="text-center text-sm text-[#888]">Loading...</p>
         )}
@@ -26,10 +26,10 @@ const RoomList: NextPage = () => {
         {rooms?.map((room) => (
           <div
             key={room.id}
-            className="flex h-8 cursor-pointer items-center justify-center"
+            className="flex h-8 cursor-pointer cursor-pointer items-center justify-center"
           >
             <div className="m-2 flex h-full w-full items-center justify-center rounded text-center text-sm hover:bg-[#e5e7e0]">
-              <p>{room.id}</p>
+              <p>{room.author}</p>
             </div>
           </div>
         ))}

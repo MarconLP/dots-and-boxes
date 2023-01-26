@@ -1,6 +1,7 @@
 import { type NextPage } from "next";
 import { api } from "../utils/api";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { faker } from "@faker-js/faker";
 
 interface Props {
   setPage: (page: string) => void;
@@ -10,11 +11,22 @@ const LandingScreen: NextPage<Props> = ({ setPage }) => {
   const [username, setUsername] = useState("");
   const createRoom = api.room.createRoom.useMutation();
 
+  const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setUsername(value);
+  };
+
   const handleNewRoom = () => {
-    setPage("room");
-    createRoom.mutate({
-      username,
-    });
+    createRoom.mutate(
+      {
+        username: username || faker.name.fullName(),
+      },
+      { onSuccess: () => setPage("room") }
+    );
+  };
+
+  const handleRoomListClick = () => {
+    setPage("room-list");
   };
 
   return (
@@ -31,7 +43,8 @@ const LandingScreen: NextPage<Props> = ({ setPage }) => {
               type="text"
               id="name"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
+              maxLength={30}
               name="name"
               autoComplete="given-name"
               placeholder="Choose a name"
@@ -41,14 +54,16 @@ const LandingScreen: NextPage<Props> = ({ setPage }) => {
         </div>
         <div>
           <button
-            onClick={() => setPage("room-list")}
-            className="mr-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            onClick={handleRoomListClick}
+            disabled={createRoom.isLoading}
+            className="mr-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-200"
           >
             Find a Game
           </button>
           <button
             onClick={handleNewRoom}
-            className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            disabled={createRoom.isLoading}
+            className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-200"
           >
             Create a Room
           </button>
