@@ -18,6 +18,7 @@ const Game: NextPage<Props> = ({ setPage }) => {
   };
 
   const handleClick = (id: number) => {
+    if ([...teamALines, ...teamBLines].includes(id)) return;
     if (turn === "TeamA") {
       setTeamALines((x) => [...x, id]);
     } else if (turn === "TeamB") {
