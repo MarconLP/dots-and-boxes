@@ -13,6 +13,7 @@ const Home: NextPage = () => {
   const [page, setPage] = useState<string>("");
   const [roomId, setRoomId] = useState<string | null>(null);
   const [username, setUsername] = useState<string>("");
+  const [winner, setWinner] = useState<string>("");
 
   return (
     <>
@@ -44,10 +45,10 @@ const Home: NextPage = () => {
       {roomId && ["game", "room"].includes(page) && (
         <PusherProvider slug={roomId}>
           {page === "room" && <Room roomId={roomId} setPage={setPage} />}
-          {page === "game" && <Game setPage={setPage} />}
+          {page === "game" && <Game setWinner={setWinner} setPage={setPage} />}
         </PusherProvider>
       )}
-      {page === "end" && <EndScreen setPage={setPage} />}
+      {page === "end" && <EndScreen winner={winner} setPage={setPage} />}
     </>
   );
 };

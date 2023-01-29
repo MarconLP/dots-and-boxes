@@ -3,9 +3,10 @@ import { Fragment, useEffect, useState } from "react";
 
 interface Props {
   setPage: (page: string) => void;
+  setWinner: (winner: string) => void;
 }
 
-const Game: NextPage<Props> = ({ setPage }) => {
+const Game: NextPage<Props> = ({ setPage, setWinner }) => {
   const [turn, setTurn] = useState("TeamA");
   const [teamALines, setTeamALines] = useState<number[]>([]);
   const [teamABoxes, setTeamABoxes] = useState<number[]>([]);
@@ -32,6 +33,9 @@ const Game: NextPage<Props> = ({ setPage }) => {
 
   useEffect(() => {
     if ([...teamABoxes, ...teamBBoxes].length >= 20) {
+      setWinner(
+        teamABoxes.length > teamBBoxes.length ? "Team Green" : "Team Blue"
+      );
       setPage("end");
     }
   }, [teamABoxes, teamBBoxes]);
