@@ -1,7 +1,6 @@
 import { type NextPage } from "next";
 import type { ChangeEvent } from "react";
 import { faker } from "@faker-js/faker";
-import { useState } from "react";
 import ObjectId from "../utils/uuid";
 
 interface Props {

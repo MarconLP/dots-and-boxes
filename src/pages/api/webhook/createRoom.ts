@@ -6,7 +6,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { events } = JSON.parse(req.body as string) as {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const { events } = JSON.parse(req.body) as {
     events: [{ channel: string; name: string }];
   };
   const { channel, name } = events[0];
@@ -34,7 +35,6 @@ export default async function handler(
     };
 
     if (users.length >= 2) {
-      console.log(users);
       await pusherServerClient.trigger(channel.substring(9), "game-start", {
         teams: [
           { user: users[0].id, team: "TeamA" },
