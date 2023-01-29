@@ -1,30 +1,50 @@
 import { type NextPage } from "next";
 import { Fragment, useEffect, useState } from "react";
+import { useSubscribeToEvent } from "../utils/pusher";
+import { api } from "../utils/api";
 
 interface Props {
   setPage: (page: string) => void;
   setWinner: (winner: string) => void;
+  team: string;
+  roomId: string;
 }
 
-const Game: NextPage<Props> = ({ setPage, setWinner }) => {
+const Game: NextPage<Props> = ({ roomId, setPage, setWinner, team }) => {
+  const gameEvent = api.room.gameEvent.useMutation();
   const [turn, setTurn] = useState("TeamA");
   const [teamALines, setTeamALines] = useState<number[]>([]);
   const [teamABoxes, setTeamABoxes] = useState<number[]>([]);
   const [teamBLines, setTeamBLines] = useState<number[]>([]);
   const [teamBBoxes, setTeamBBoxes] = useState<number[]>([]);
 
+  useSubscribeToEvent("game-event", (data: { line: number; team: string }) => {
+    if (data.team === team) return;
+    handleTurn(data.line, data.team);
+  });
+
   const toggleTurn = () => {
     if (turn === "TeamA") setTurn("TeamB");
     else if (turn === "TeamB") setTurn("TeamA");
   };
 
-  const handleClick = (id: number) => {
-    if ([...teamALines, ...teamBLines].includes(id)) return;
-    if (turn === "TeamA") {
+  const handleTurn = (id: number, team: string) => {
+    if (team === "TeamA") {
       setTeamALines((x) => [...x, id]);
-    } else if (turn === "TeamB") {
+    } else if (team === "TeamB") {
       setTeamBLines((x) => [...x, id]);
     }
+  };
+
+  const handleClick = (id: number) => {
+    if (turn !== team) return;
+    if ([...teamALines, ...teamBLines].includes(id)) return;
+    gameEvent.mutate({
+      team,
+      channel: roomId,
+      line: id,
+    });
+    handleTurn(id, team);
   };
 
   useEffect(() => {
@@ -34,7 +54,7 @@ const Game: NextPage<Props> = ({ setPage, setWinner }) => {
   useEffect(() => {
     if ([...teamABoxes, ...teamBBoxes].length >= 20) {
       setWinner(
-        teamABoxes.length > teamBBoxes.length ? "Team Green" : "Team Blue"
+        teamABoxes.length > teamBBoxes.length ? "Team Green" : "Team Red"
       );
       setPage("end");
     }
@@ -107,7 +127,7 @@ const Game: NextPage<Props> = ({ setPage, setWinner }) => {
     <main className="flex h-[100vh] flex-col items-center justify-center gap-4">
       <div>
         <p className="mb-6 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
-          {turn === "TeamA" ? "Your Turn" : "Opponents Turn"}
+          {turn === team ? "Your Turn" : "Opponents Turn"}
         </p>
       </div>
       <div className="flex flex-col items-center justify-center">

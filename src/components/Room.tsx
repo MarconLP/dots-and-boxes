@@ -4,13 +4,26 @@ import DotsLoader from "@components/DotsLoader";
 
 interface Props {
   setPage: (page: string) => void;
+  setTeam: (team: string) => void;
   roomId: string;
+  username: string;
 }
 
-const Room: NextPage<Props> = ({ setPage, roomId }) => {
-  useSubscribeToEvent("game-start", () => {
-    setPage("game");
-  });
+const Room: NextPage<Props> = ({ setPage, roomId, setTeam, username }) => {
+  useSubscribeToEvent(
+    "game-start",
+    ({ teams }: { teams: [{ user: string; team: string }] }) => {
+      const team: string | undefined = teams.find(
+        (x) => x.user === username
+      )?.team;
+      if (team) {
+        setTeam(team);
+        setPage("game");
+      } else {
+        setPage("");
+      }
+    }
+  );
 
   return (
     <main className="flex h-[100vh] flex-col items-center justify-center">

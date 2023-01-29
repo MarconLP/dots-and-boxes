@@ -19,7 +19,7 @@ const RoomList: NextPage<Props> = ({
     refetchInterval: 5000,
   });
 
-  const handleClick = (roomId: string) => (e: MouseEvent) => {
+  const handleClick = (roomId: string) => () => {
     const newUsername = username || faker.name.middleName();
     setUsername(newUsername);
     localStorage.setItem("username", newUsername);
@@ -46,7 +46,7 @@ const RoomList: NextPage<Props> = ({
         {rooms?.length === 0 && (
           <p className="text-center text-sm text-[#888]">No rooms</p>
         )}
-        {rooms?.map(({ roomId, id }) => (
+        {rooms?.map(({ roomId, id }: { roomId: string; id: string }) => (
           <div
             onClick={handleClick(roomId)}
             key={id}

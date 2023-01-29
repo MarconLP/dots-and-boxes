@@ -30,11 +30,19 @@ export default async function handler(
     const { users } = await usersRes.json();
 
     if (users.length >= 2) {
-      await pusherServerClient.trigger(
-        channel.substring(9),
-        "game-start",
-        null
-      );
+      console.log(users);
+      await pusherServerClient.trigger(channel.substring(9), "game-start", {
+        teams: [
+          { user: users[0].id, team: "TeamA" },
+          { user: users[1].id, team: "TeamB" },
+        ],
+      });
+
+      await prisma.room.deleteMany({
+        where: {
+          roomId: channel.substring(9),
+        },
+      });
     }
   }
 

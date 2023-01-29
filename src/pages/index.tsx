@@ -11,6 +11,7 @@ import { PusherProvider } from "../utils/pusher";
 
 const Home: NextPage = () => {
   const [page, setPage] = useState<string>("");
+  const [team, setTeam] = useState<string | null>(null);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [username, setUsername] = useState<string>("");
   const [winner, setWinner] = useState<string>("");
@@ -44,8 +45,22 @@ const Home: NextPage = () => {
       )}
       {roomId && ["game", "room"].includes(page) && (
         <PusherProvider slug={roomId}>
-          {page === "room" && <Room roomId={roomId} setPage={setPage} />}
-          {page === "game" && <Game setWinner={setWinner} setPage={setPage} />}
+          {page === "room" && (
+            <Room
+              username={username}
+              roomId={roomId}
+              setTeam={setTeam}
+              setPage={setPage}
+            />
+          )}
+          {page === "game" && team && (
+            <Game
+              roomId={roomId}
+              team={team}
+              setWinner={setWinner}
+              setPage={setPage}
+            />
+          )}
         </PusherProvider>
       )}
       {page === "end" && <EndScreen winner={winner} setPage={setPage} />}
