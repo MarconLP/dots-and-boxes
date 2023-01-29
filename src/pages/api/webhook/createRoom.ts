@@ -12,7 +12,11 @@ export default async function handler(
   };
   const { channel, name } = events[0];
 
-  if (!channel.startsWith("presence-")) return res.send({ success: false });
+  if (
+    !channel.startsWith("presence-") ||
+    req.headers["x-pusher-key"] !== process.env.PUSHER_APP_KEY
+  )
+    return res.send({ success: false });
 
   if (name === "channel_occupied") {
     await prisma.room.create({
