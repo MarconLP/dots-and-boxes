@@ -4,13 +4,13 @@ import DotsLoader from "@components/DotsLoader";
 
 interface Props {
   setPage: (page: string) => void;
-  username: string;
   roomId: string;
 }
 
-const Room: NextPage<Props> = ({ setPage, username, roomId }) => {
-  useSubscribeToEvent(roomId, (x) => console.log(x));
-  const players = ["player 1", "player 2"];
+const Room: NextPage<Props> = ({ setPage, roomId }) => {
+  useSubscribeToEvent("game-start", () => {
+    setPage("game");
+  });
 
   return (
     <main className="flex h-[100vh] flex-col items-center justify-center">

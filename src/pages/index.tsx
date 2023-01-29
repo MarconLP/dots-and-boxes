@@ -33,12 +33,17 @@ const Home: NextPage = () => {
           setRoomId={setRoomId}
         />
       )}
-      {page === "room-list" && <RoomList />}
+      {page === "room-list" && (
+        <RoomList
+          username={username}
+          setUsername={setUsername}
+          setPage={setPage}
+          setRoomId={setRoomId}
+        />
+      )}
       {roomId && ["game", "room"].includes(page) && (
         <PusherProvider slug={roomId}>
-          {page === "room" && (
-            <Room roomId={roomId} username={username} setPage={setPage} />
-          )}
+          {page === "room" && <Room roomId={roomId} setPage={setPage} />}
           {page === "game" && <Game setPage={setPage} />}
         </PusherProvider>
       )}

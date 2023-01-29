@@ -1,10 +1,31 @@
 import { type NextPage } from "next";
 import { api } from "../utils/api";
+import { faker } from "@faker-js/faker";
 
-const RoomList: NextPage = () => {
+interface Props {
+  username: string;
+  setUsername: (username: string) => void;
+  setPage: (username: string) => void;
+  setRoomId: (username: string) => void;
+}
+
+const RoomList: NextPage<Props> = ({
+  username,
+  setUsername,
+  setPage,
+  setRoomId,
+}) => {
   const { data: rooms, isLoading } = api.room.getAll.useQuery(undefined, {
     refetchInterval: 5000,
   });
+
+  const handleClick = (roomId: string) => (e: MouseEvent) => {
+    const newUsername = username || faker.name.middleName();
+    setUsername(newUsername);
+    localStorage.setItem("username", newUsername);
+    setRoomId(roomId);
+    setPage("room");
+  };
 
   return (
     <main className="flex h-[100vh] flex-col items-center justify-center">
@@ -25,13 +46,14 @@ const RoomList: NextPage = () => {
         {rooms?.length === 0 && (
           <p className="text-center text-sm text-[#888]">No rooms</p>
         )}
-        {rooms?.map((room) => (
+        {rooms?.map(({ roomId, id }) => (
           <div
-            key={room.id}
+            onClick={handleClick(roomId)}
+            key={id}
             className="flex h-8 cursor-pointer cursor-pointer items-center justify-center"
           >
             <div className="m-2 flex h-full w-full items-center justify-center rounded text-center text-sm hover:bg-[#e5e7e0]">
-              <p>{room.roomId}</p>
+              <p>{roomId}</p>
             </div>
           </div>
         ))}
