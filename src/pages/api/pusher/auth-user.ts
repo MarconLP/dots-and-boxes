@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { pusherServerClient } from "../../../server/pusher";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { socket_id } = req.body;
+  const { socket_id } = req.body as { socket_id: string };
   const { auth_key } = req.headers;
 
   console.log("auth user");

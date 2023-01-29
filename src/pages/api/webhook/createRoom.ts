@@ -6,8 +6,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { events } = JSON.parse(req.body);
-  const { channel, name }: { channel: string; name: string } = events[0];
+  const { events } = JSON.parse(req.body as string) as {
+    events: [{ channel: string; name: string }];
+  };
+  const { channel, name } = events[0];
 
   if (!channel.startsWith("presence-")) return res.send({ success: false });
 
@@ -27,7 +29,9 @@ export default async function handler(
     const usersRes = await pusherServerClient.get({
       path: `/channels/${channel}/users`,
     });
-    const { users } = await usersRes.json();
+    const { users } = (await usersRes.json()) as {
+      users: [{ id: string }, { id: string }];
+    };
 
     if (users.length >= 2) {
       console.log(users);
