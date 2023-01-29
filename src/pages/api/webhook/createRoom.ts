@@ -34,8 +34,6 @@ export default async function handler(
       users: [{ id: string }, { id: string }];
     };
 
-    console.log({ users, usersRes });
-
     if (users.length >= 2) {
       await pusherServerClient.trigger(channel.substring(9), "game-start", {
         teams: [
