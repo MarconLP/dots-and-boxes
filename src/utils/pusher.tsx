@@ -50,7 +50,13 @@ const createPusherStore = (slug: string) => {
   // Update helper that sets 'members' to contents of presence channel's current members
   const updateMembers = () => {
     store.setState(() => ({
-      members: new Map(Object.entries(presenceChannel.members.members)),
+      members: new Map(
+        Object.entries(
+          presenceChannel.members.members as
+            | { [s: string]: any }
+            | ArrayLike<any>
+        )
+      ),
     }));
   };
 
