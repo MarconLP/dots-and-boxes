@@ -24,14 +24,17 @@ const createPusherStore = (slug: string) => {
       cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER!,
       authEndpoint: "/api/pusher/auth-channel",
       auth: {
-        headers: { key: "access_token" },
+        headers: {
+          auth_key: "access_token",
+          username: localStorage.getItem("username"),
+        },
       },
     });
   }
 
   const channel = pusherClient.subscribe(slug);
 
-  const presenceChannel = pusherClient.subscribe(
+  const presenceChannel: PresenceChannel = pusherClient.subscribe(
     `presence-${slug}`
   ) as PresenceChannel;
 

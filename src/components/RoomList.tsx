@@ -2,7 +2,9 @@ import { type NextPage } from "next";
 import { api } from "../utils/api";
 
 const RoomList: NextPage = () => {
-  const { data: rooms, isLoading } = api.room.getAll.useQuery();
+  const { data: rooms, isLoading } = api.room.getAll.useQuery(undefined, {
+    refetchInterval: 5000,
+  });
 
   return (
     <main className="flex h-[100vh] flex-col items-center justify-center">
@@ -16,7 +18,7 @@ const RoomList: NextPage = () => {
           Click to join a room
         </p>
       </div>
-      <div className="mt-4 max-h-[60vh] w-[200px] overflow-scroll border border-[#E2E8F0] p-2">
+      <div className="mt-4 max-h-[60vh] w-[300px] overflow-scroll rounded border border-[#E2E8F0] p-2">
         {isLoading && (
           <p className="text-center text-sm text-[#888]">Loading...</p>
         )}
@@ -29,7 +31,7 @@ const RoomList: NextPage = () => {
             className="flex h-8 cursor-pointer cursor-pointer items-center justify-center"
           >
             <div className="m-2 flex h-full w-full items-center justify-center rounded text-center text-sm hover:bg-[#e5e7e0]">
-              <p>{room.author}</p>
+              <p>{room.roomId}</p>
             </div>
           </div>
         ))}

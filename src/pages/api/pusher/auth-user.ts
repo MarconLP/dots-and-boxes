@@ -2,11 +2,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { pusherServerClient } from "../../../server/pusher";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const {
-    channel_name,
-    socket_id,
-  }: { channel_name: string; socket_id: string } = req.body;
+  const { socket_id } = req.body;
   const { auth_key } = req.headers;
+
+  console.log("auth user");
 
   if (!auth_key || auth_key !== "access_token") {
     console.log(req.headers);
@@ -14,11 +13,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  const auth = pusherServerClient.authorizeChannel(socket_id, channel_name, {
-    user_id: auth_key,
-    user_info: {
-      name: "superman",
-    },
+  const auth = pusherServerClient.authenticateUser(socket_id, {
+    id: auth_key,
+    name: "ironman",
   });
   res.send(auth);
 }

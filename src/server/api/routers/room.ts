@@ -1,29 +1,22 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { pusherServerClient } from "../..//pusher";
+import { pusherServerClient } from "../../pusher";
 
 export const roomRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const rooms = await ctx.prisma.room.findMany();
-    return rooms;
+    return await ctx.prisma.room.findMany();
   }),
 
-  createRoom: publicProcedure
-    .input(z.object({ username: z.string().min(1).max(30).trim() }))
-    .mutation(async ({ input, ctx }) => {
-      await ctx.prisma.room.create({
-        data: {
-          author: input.username,
-        },
-      });
-
-      return "OK";
-    }),
-
-  triggerMessage: publicProcedure.query(async ({ input, ctx }) => {
-    await pusherServerClient.trigger("my-channel", "my-event", {
+  updateCount: publicProcedure.query(async ({ input, ctx }) => {
+    await pusherServerClient.trigger("presence-lobby", "my-event", {
       message: "hello world",
+    });
+
+    await ctx.prisma.room.upsert({
+      where: { id: 1 },
+      update: { email: "alice@prisma.io" },
+      create: { email: "alice@prisma.io" },
     });
 
     return "OK";

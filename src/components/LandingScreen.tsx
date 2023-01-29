@@ -1,31 +1,33 @@
 import { type NextPage } from "next";
-import { api } from "../utils/api";
-import { ChangeEvent, useState } from "react";
+import type { ChangeEvent } from "react";
 import { faker } from "@faker-js/faker";
-import { useSubscribeToEvent } from "../utils/pusher";
+import { useState } from "react";
+import ObjectId from "../utils/uuid";
 
 interface Props {
   setPage: (page: string) => void;
+  username: string;
+  setUsername: (username: string) => void;
+  setRoomId: (roomId: string) => void;
 }
 
-const LandingScreen: NextPage<Props> = ({ setPage }) => {
-  const [username, setUsername] = useState("");
-  const createRoom = api.room.createRoom.useMutation();
-
-  useSubscribeToEvent("new-question", (x) => console.log(x));
-
+const LandingScreen: NextPage<Props> = ({
+  setPage,
+  username,
+  setUsername,
+  setRoomId,
+}) => {
   const handleUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setUsername(value);
   };
 
   const handleNewRoom = () => {
-    createRoom.mutate(
-      {
-        username: username || faker.name.fullName(),
-      },
-      { onSuccess: () => setPage("room") }
-    );
+    const newUsername = username || faker.name.middleName();
+    setUsername(newUsername);
+    localStorage.setItem("username", newUsername);
+    setRoomId(ObjectId());
+    setPage("room");
   };
 
   const handleRoomListClick = () => {
@@ -58,14 +60,12 @@ const LandingScreen: NextPage<Props> = ({ setPage }) => {
         <div>
           <button
             onClick={handleRoomListClick}
-            disabled={createRoom.isLoading}
             className="mr-4 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-200"
           >
             Find a Game
           </button>
           <button
             onClick={handleNewRoom}
-            disabled={createRoom.isLoading}
             className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-200"
           >
             Create a Room

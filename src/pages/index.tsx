@@ -1,17 +1,18 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { api } from "../utils/api";
 import LandingScreen from "@components/LandingScreen";
 import RoomList from "@components/RoomList";
 import { useState } from "react";
 import Room from "@components/Room";
 import Game from "@components/Game";
 import EndScreen from "@components/EndScreen";
-import { PusherProvider, useSubscribeToEvent } from "../utils/pusher";
+import { PusherProvider } from "../utils/pusher";
 
 const Home: NextPage = () => {
-  const [page, setPage] = useState("");
+  const [page, setPage] = useState<string>("");
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>("");
 
   return (
     <>
@@ -24,13 +25,24 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <PusherProvider slug={`my-channel`}>
-        {page === "" && <LandingScreen setPage={setPage} />}
-        {page === "room-list" && <RoomList />}
-        {page === "room" && <Room setPage={setPage} />}
-        {page === "game" && <Game setPage={setPage} />}
-        {page === "end" && <EndScreen setPage={setPage} />}
-      </PusherProvider>
+      {page === "" && (
+        <LandingScreen
+          username={username}
+          setUsername={setUsername}
+          setPage={setPage}
+          setRoomId={setRoomId}
+        />
+      )}
+      {page === "room-list" && <RoomList />}
+      {roomId && ["game", "room"].includes(page) && (
+        <PusherProvider slug={roomId}>
+          {page === "room" && (
+            <Room roomId={roomId} username={username} setPage={setPage} />
+          )}
+          {page === "game" && <Game setPage={setPage} />}
+        </PusherProvider>
+      )}
+      {page === "end" && <EndScreen setPage={setPage} />}
     </>
   );
 };
