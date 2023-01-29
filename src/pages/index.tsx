@@ -8,6 +8,7 @@ import Room from "@components/Room";
 import Game from "@components/Game";
 import EndScreen from "@components/EndScreen";
 import { PusherProvider } from "../utils/pusher";
+import PostHog from "@components/PostHog";
 
 const Home: NextPage = () => {
   const [page, setPage] = useState<string>("");
@@ -64,6 +65,8 @@ const Home: NextPage = () => {
         </PusherProvider>
       )}
       {page === "end" && <EndScreen winner={winner} setPage={setPage} />}
+
+      <PostHog />
     </>
   );
 };
