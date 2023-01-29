@@ -10,7 +10,7 @@ export default function PostHog() {
   }, [pathname]);
 
   useEffect(() => {
-    if (typeof window !== undefined && process.env.NODE_ENV !== "production") {
+    if (typeof window !== undefined && process.env.NODE_ENV === "production") {
       posthog.init(process.env.NEXT_PUBLIC_POSTHOG_TOKEN!, {
         api_host: "https://eu.posthog.com",
       });
