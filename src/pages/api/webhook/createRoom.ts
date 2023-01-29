@@ -6,8 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const { events } = JSON.parse(req.body) as {
+  const { events } = req.body as {
     events: [{ channel: string; name: string }];
   };
   const { channel, name } = events[0];
