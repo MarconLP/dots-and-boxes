@@ -120,7 +120,6 @@ const Game: NextPage<Props> = ({ roomId, setPage, setWinner, team }) => {
 
     if (teamA) return "#44be2acc";
     else if (teamB) return "#c64136cc";
-    else return "#111827";
   };
 
   return (
@@ -150,7 +149,7 @@ const Game: NextPage<Props> = ({ roomId, setPage, setWinner, team }) => {
                         }}
                         onClick={() => handleClick(id)}
                         data-id={id}
-                        className={`cursor-pointer rounded ${
+                        className={`cursor-pointer rounded border border-[#e9ebf0] ${
                           isBigRow ? "h-[100px] w-6" : "h-6 w-[100px]"
                         }`}
                       ></div>
