@@ -39,7 +39,7 @@ const RoomList: NextPage<Props> = ({
           Click to join a room
         </p>
       </div>
-      <div className="mt-4 max-h-[60vh] w-[300px] overflow-scroll rounded border border-[#E2E8F0] p-2">
+      <div className="mt-4 max-h-[60vh] w-[300px] overflow-auto rounded border border-[#E2E8F0] p-2">
         {isLoading && (
           <p className="text-center text-sm text-[#888]">Loading...</p>
         )}
