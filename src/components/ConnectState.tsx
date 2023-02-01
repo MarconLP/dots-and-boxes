@@ -5,13 +5,14 @@ export default function ConnectState() {
   const [load, setLoad] = useState(false);
   const state = usePusherStatus();
 
-  const getColors = () => {
+  const getColors = (): string => {
     if (state === "connected")
       return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
     if (["unavailable", "failed", "disconnected"].includes(state))
       return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
     if (["connecting", "intialized"].includes(state))
       return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+    return "";
   };
 
   useEffect(() => {
