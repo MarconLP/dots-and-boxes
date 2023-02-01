@@ -9,6 +9,7 @@ import Game from "@components/Game";
 import EndScreen from "@components/EndScreen";
 import { PusherProvider } from "../utils/pusher";
 import PostHog from "@components/PostHog";
+import ConnectState from "@components/ConnectState";
 
 const Home: NextPage = () => {
   const [page, setPage] = useState<string>("");
@@ -46,6 +47,7 @@ const Home: NextPage = () => {
       )}
       {roomId && ["game", "room"].includes(page) && (
         <PusherProvider slug={roomId}>
+          <ConnectState />
           {page === "room" && (
             <Room
               username={username}

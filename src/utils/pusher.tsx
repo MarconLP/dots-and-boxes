@@ -144,3 +144,6 @@ export function useSubscribeToEvent<MessageType>(
 
 export const useCurrentMemberCount = () =>
   usePusherZustandStore((s) => s.members.size);
+
+export const usePusherStatus = () =>
+  usePusherZustandStore((s) => s.pusherClient.connection.state);
