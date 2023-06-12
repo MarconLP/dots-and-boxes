@@ -2,7 +2,7 @@ import { usePusherStatus } from "../utils/pusher";
 import { useEffect, useState } from "react";
 
 export default function ConnectState() {
-  const [load, setLoad] = useState(false);
+  const [, setLoad] = useState(false);
   const state = usePusherStatus();
 
   const getColors = (): string => {

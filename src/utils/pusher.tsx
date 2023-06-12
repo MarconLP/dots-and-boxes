@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import Pusher from "pusher-js";
 import createContext from "zustand/context";
 import vanillaCreate from "zustand/vanilla";
+import { env } from "../env/client.mjs";
 
 interface PusherZustandStore {
   pusherClient: Pusher;
@@ -20,8 +21,8 @@ const createPusherStore = (slug: string) => {
     pusherClient = Pusher.instances[0] as Pusher;
     pusherClient.connect();
   } else {
-    pusherClient = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER!,
+    pusherClient = new Pusher(env.NEXT_PUBLIC_PUSHER_APP_KEY, {
+      cluster: env.NEXT_PUBLIC_PUSHER_APP_CLUSTER,
       authEndpoint: "/api/pusher/auth-channel",
       auth: {
         headers: {
@@ -141,9 +142,6 @@ export function useSubscribeToEvent<MessageType>(
     };
   }, [channel, eventName]);
 }
-
-export const useCurrentMemberCount = () =>
-  usePusherZustandStore((s) => s.members.size);
 
 export const usePusherStatus = () =>
   usePusherZustandStore((s) => s.pusherClient.connection.state);

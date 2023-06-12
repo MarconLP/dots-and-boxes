@@ -12,7 +12,7 @@ export const roomRouter = createTRPCRouter({
     .input(
       z.object({ channel: z.string(), team: z.string(), line: z.number() })
     )
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input }) => {
       await pusherServerClient.trigger(input.channel, "game-event", {
         team: input.team,
         line: input.line,
